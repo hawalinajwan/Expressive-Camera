@@ -7,16 +7,19 @@ const detectedEmotions = new Set();
 const targetEmotions = ['happy', 'angry', 'surprised', 'neutral'];
 
 async function loadModels() {
+  // Memuat model deteksi wajah dan ekspresi wajah
   await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
   await faceapi.nets.faceExpressionNet.loadFromUri('/models');
 }
 
 async function startCamera() {
+  // Mengakses kamera pengguna
   const stream = await navigator.mediaDevices.getUserMedia({ video: true });
   video.srcObject = stream;
 }
 
 function getDominantEmotion(expressions) {
+  // Mengambil emosi dominan berdasarkan ekspresi yang terdeteksi
   const sorted = Object.entries(expressions).sort((a, b) => b[1] - a[1]);
   const [topEmotion, confidence] = sorted[0];
 
@@ -25,6 +28,7 @@ function getDominantEmotion(expressions) {
 }
 
 function capturePhoto() {
+  // Mengambil foto dari stream video
   const ctx = canvas.getContext('2d');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -33,6 +37,7 @@ function capturePhoto() {
 }
 
 function mapEmotionToEmoji(emotion) {
+  // Menentukan emoji berdasarkan emosi yang terdeteksi
   switch (emotion) {
     case 'happy':
       return '😁';
@@ -48,6 +53,7 @@ function mapEmotionToEmoji(emotion) {
 }
 
 function addPhotoToGrid(imageData, label) {
+  // Menambahkan foto ke dalam grid tampilan
   const wrapper = document.createElement('div');
   wrapper.style.display = 'flex';
   wrapper.style.flexDirection = 'column';
@@ -68,12 +74,14 @@ function addPhotoToGrid(imageData, label) {
 }
 
 function checkDownloadReady() {
+  // Menampilkan tombol download jika sudah ada 4 emosi terdeteksi
   if (detectedEmotions.size >= 4) {
     downloadBtn.style.display = 'inline-block';
   }
 }
 
 function generateCollage() {
+  // Membuat kolase gambar dari 4 foto yang diambil
   const wrappers = Array.from(document.querySelectorAll('#photos div'));
   if (wrappers.length < 4) return;
 
@@ -124,6 +132,7 @@ video.addEventListener('play', () => {
 });
 
 downloadBtn.addEventListener('click', () => {
+  // Mengunduh kolase gambar saat tombol download diklik
   const collage = generateCollage();
   if (collage) {
     const a = document.createElement('a');
@@ -134,18 +143,7 @@ downloadBtn.addEventListener('click', () => {
 });
 
 (async () => {
+  // Memuat model dan mulai kamera
   await loadModels();
   await startCamera();
 })();
-
-async function startCamera() {
-  try {
-    console.log("Mencoba mengakses kamera...");
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    video.srcObject = stream;
-  } catch (err) {
-    console.error("Error mengakses kamera:", err);
-    alert("Kamera tidak dapat diakses. Pastikan perangkat kamu terhubung dengan benar.");
-  }
-}
-
