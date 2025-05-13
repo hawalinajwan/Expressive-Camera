@@ -4,31 +4,28 @@ const photos = document.getElementById('photos');
 const downloadBtn = document.getElementById('download');
 
 const detectedEmotions = new Set();
-const targetEmotions = ['happy', 'angry', 'surprised', 'neutral'];
+const targetEmotions = ['happy', 'angry', 'surprised', 'sad'];
+let currentEmotionIndex = 0;
 
 async function loadModels() {
-  // Memuat model deteksi wajah dan ekspresi wajah
-  await faceapi.nets.tinyFaceDetector.loadFromUri('models');
-  await faceapi.nets.faceExpressionNet.loadFromUri('models');
+  await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+  await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+  await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+  await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
 }
 
 async function startCamera() {
-  // Mengakses kamera pengguna
   const stream = await navigator.mediaDevices.getUserMedia({ video: true });
   video.srcObject = stream;
 }
 
 function getDominantEmotion(expressions) {
-  // Mengambil emosi dominan berdasarkan ekspresi yang terdeteksi
   const sorted = Object.entries(expressions).sort((a, b) => b[1] - a[1]);
   const [topEmotion, confidence] = sorted[0];
-
-  if (confidence > 0.8) return topEmotion;
-  return null;
+  return confidence > 0.6 ? topEmotion : null;
 }
 
 function capturePhoto() {
-  // Mengambil foto dari stream video
   const ctx = canvas.getContext('2d');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
@@ -37,23 +34,16 @@ function capturePhoto() {
 }
 
 function mapEmotionToEmoji(emotion) {
-  // Menentukan emoji berdasarkan emosi yang terdeteksi
   switch (emotion) {
-    case 'happy':
-      return '😁';
-    case 'angry':
-      return '😠';
-    case 'surprised':
-      return '😂';
-    case 'neutral':
-      return '😴';
-    default:
-      return '❓';
+    case 'happy': return '😁';
+    case 'angry': return '😠';
+    case 'sad': return '😟';
+    case 'surprised': return '😧';
+    default: return '';
   }
 }
 
 function addPhotoToGrid(imageData, label) {
-  // Menambahkan foto ke dalam grid tampilan
   const wrapper = document.createElement('div');
   wrapper.style.display = 'flex';
   wrapper.style.flexDirection = 'column';
@@ -74,65 +64,76 @@ function addPhotoToGrid(imageData, label) {
 }
 
 function checkDownloadReady() {
-  // Menampilkan tombol download jika sudah ada 4 emosi terdeteksi
   if (detectedEmotions.size >= 4) {
     downloadBtn.style.display = 'inline-block';
   }
 }
 
 function generateCollage() {
-  // Membuat kolase gambar dari 4 foto yang diambil
   const wrappers = Array.from(document.querySelectorAll('#photos div'));
   if (wrappers.length < 4) return;
 
-  const size = 150;
+  const size = 500;
   const collageCanvas = document.createElement('canvas');
-  collageCanvas.width = size * 2;
-  collageCanvas.height = size * 2;
+  collageCanvas.width = size + 100;
+  collageCanvas.height = size * wrappers.length + 50; 
   const ctx = collageCanvas.getContext('2d');
-  ctx.font = '20px sans-serif';
-  ctx.textAlign = 'center';
+
   ctx.fillStyle = 'white';
-  ctx.strokeStyle = 'black';
+  ctx.fillRect(0, 0, collageCanvas.width, collageCanvas.height);
+
+  ctx.font = '36px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'black';
+  ctx.strokeStyle = 'white'; 
   ctx.lineWidth = 2;
 
   wrappers.forEach((wrapper, i) => {
     const img = wrapper.querySelector('img');
     const label = wrapper.querySelector('span').textContent;
-    const x = (i % 2) * size;
-    const y = Math.floor(i / 2) * size;
+    const x = 50; 
+    const y = i * size + 25; 
 
-    ctx.drawImage(img, x, y, size, size);
-    ctx.strokeText(label, x + size / 2, y + size - 10);
-    ctx.fillText(label, x + size / 2, y + size - 10);
+    const aspectRatio = img.naturalHeight / img.naturalWidth;
+    const targetHeight = size * aspectRatio;
+
+    ctx.drawImage(img, x, y, size, targetHeight);
+
+    ctx.strokeText(label, x + size / 2, y + targetHeight + 35);
+    ctx.fillText(label, x + size / 2, y + targetHeight + 35);
   });
 
   return collageCanvas.toDataURL('image/png');
 }
 
+
+
 video.addEventListener('play', () => {
-  const interval = setInterval(async () => {
+  setInterval(async () => {
     const detection = await faceapi
-      .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+      .detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 }))
       .withFaceExpressions();
 
-    if (detection && detection.expressions) {
+    if (detection?.expressions) {
       const emotion = getDominantEmotion(detection.expressions);
-      if (emotion && !detectedEmotions.has(emotion)) {
-        if (targetEmotions.includes(emotion)) {
-          console.log(`📸 Emosi terdeteksi: ${emotion}`);
-          const image = capturePhoto();
-          addPhotoToGrid(image, emotion);
-          detectedEmotions.add(emotion);
-          checkDownloadReady();
-        }
-      }
+      if (
+  emotion &&
+  emotion === targetEmotions[currentEmotionIndex]
+) {
+  console.log(`📸 Emosi terdeteksi: ${emotion}`);
+  const image = capturePhoto();
+  addPhotoToGrid(image, emotion);
+  currentEmotionIndex++;
+
+  if (currentEmotionIndex >= targetEmotions.length) {
+    downloadBtn.style.display = 'inline-block';
+  }
+}
     }
-  }, 1000);
+  }, 250);
 });
 
 downloadBtn.addEventListener('click', () => {
-  // Mengunduh kolase gambar saat tombol download diklik
   const collage = generateCollage();
   if (collage) {
     const a = document.createElement('a');
@@ -143,7 +144,6 @@ downloadBtn.addEventListener('click', () => {
 });
 
 (async () => {
-  // Memuat model dan mulai kamera
   await loadModels();
   await startCamera();
 })();

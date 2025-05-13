@@ -1,23 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kamera Emosi</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expressive Camera</title>
+    <link rel="icon" type="image/png" href="H0n0.png" />
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <h1>Kamera Emosi Otomatis 📸</h1>
-
-  <video id="video" width="640" height="480" autoplay muted></video>
-  <canvas id="canvas" style="display:none;"></canvas>
-
-  <div id="photos" class="photo-grid"></div>
-
-  <button id="download" style="display:none;">Download Kolase</button>
-
-  <!-- Load face-api.js -->
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
-  <script defer src="script.js"></script>
+    <div class="container">
+        <h1 class="title">Expressive Camera</h1>
+        <h2>Automatic Capturing: 😁->😠->😧->😔</h2>
+        <h2>‎ </h2>
+        <div class="camera-container">
+            <video id="video" width="640" height="480" autoplay muted></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+        <div class="photo-grid-container">
+            <div id="photos" class="photo-grid"></div>
+        </div>
+        <button id="download" class="download-btn" style="display:none;" title="Download your emotion collage">
+            <span style="vertical-align:middle;">&#128190;</span> Download Photo Collage
+        </button>
+        <div class="footer">
+            <p>Made with ❤️ by <a href="https://hanamara.site" target="_blank">hawalinajwan</a></p>
+        </div>
+        <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+        <script defer src="script.js"></script>
 </body>
+
 </html>
