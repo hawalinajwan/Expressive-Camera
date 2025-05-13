@@ -137,3 +137,15 @@ downloadBtn.addEventListener('click', () => {
   await loadModels();
   await startCamera();
 })();
+
+async function startCamera() {
+  try {
+    console.log("Mencoba mengakses kamera...");
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+  } catch (err) {
+    console.error("Error mengakses kamera:", err);
+    alert("Kamera tidak dapat diakses. Pastikan perangkat kamu terhubung dengan benar.");
+  }
+}
+
