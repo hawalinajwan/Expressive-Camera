@@ -49,6 +49,10 @@ header {
     width: 100%;
 }
 
+.dn{
+    display:none
+}
+
 video {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -85,6 +89,10 @@ canvas {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.sp{
+    vertical-align:middle;
+}
+
 .button-container {
     margin-top: 20px;
 }
@@ -99,6 +107,7 @@ canvas {
     cursor: pointer;
     transition: background-color 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display:none;
 }
 
 .download-btn:hover {
