@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kamera Emosi</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Kamera Emosi Otomatis 📸</h1>
+
+  <video id="video" width="640" height="480" autoplay muted></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <div id="photos" class="photo-grid"></div>
+
+  <button id="download" style="display:none;">Download Kolase</button>
+
+  <!-- Load face-api.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+  <script defer src="script.js"></script>
+</body>
+</html>
