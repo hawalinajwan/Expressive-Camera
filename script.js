@@ -29,7 +29,12 @@ function capturePhoto() {
   const ctx = canvas.getContext('2d');
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
+  // Balik gambar agar hasil foto tidak mirror
+  ctx.save();
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
   ctx.drawImage(video, 0, 0);
+  ctx.restore();
   return canvas.toDataURL('image/png');
 }
 
