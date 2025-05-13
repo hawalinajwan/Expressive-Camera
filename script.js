@@ -138,7 +138,7 @@ downloadBtn.addEventListener('click', () => {
   if (collage) {
     const a = document.createElement('a');
     a.href = collage;
-    a.download = 'kolase_emosi.png';
+    a.download = 'Expressive-Camera.png';
     a.click();
   }
 });
