@@ -12,16 +12,20 @@
 <body>
     <div class="container">
         <h1 class="title">Expressive Camera</h1>
-        <h2>Automatic Capturing: 😁->😠->😮->😔</h2>
         <h2>‎ </h2>
+        <h2>Automatic Capturing</h2>
+        <div id="expressionTarget" class="expression-target">
+            Show Expression:<span class="emoj" id="targetEmoji">😁</span>
+        </div>
         <div class="camera-container">
             <video id="video" width="640" height="480" autoplay muted></video>
             <canvas id="canvas" class="dn"></canvas>
         </div>
         <div class="photo-grid-container">
+
             <div id="photos" class="photo-grid"></div>
         </div>
-        <button id="download" class="download-btn"  title="Download your emotion collage">
+        <button id="download" class="download-btn" title="Download your emotion collage">
             <span class="sp">&#128190;</span> Download Photo Collage
         </button>
         <div class="footer">

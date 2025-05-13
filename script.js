@@ -144,13 +144,16 @@ video.addEventListener('play', () => {
   emotion &&
   emotion === targetEmotions[currentEmotionIndex]
 ) {
-  console.log(`📸 Emosi terdeteksi: ${emotion}`);
+  console.log(`📸 Emotions detected: ${emotion}`);
   const image = capturePhoto();
   addPhotoToGrid(image, emotion);
   currentEmotionIndex++;
 
-  if (currentEmotionIndex >= targetEmotions.length) {
+   if (currentEmotionIndex >= targetEmotions.length) {
     downloadBtn.style.display = 'inline-block';
+    document.getElementById('expressionTarget').textContent = 'Finished! 🎉';
+  } else {
+    updateTargetExpressionUI(); // <- update ke ekspresi selanjutnya
   }
 }
     }
@@ -171,3 +174,17 @@ downloadBtn.addEventListener('click', () => {
   await loadModels();
   await startCamera();
 })();
+
+const emojiMap = {
+  happy: '😁',
+  angry: '😠',
+  surprised: '😧',
+  sad: '😟'
+};
+
+function updateTargetExpressionUI() {
+  const target = targetEmotions[currentEmotionIndex];
+  const emoji = emojiMap[target] || '';
+  const emojiSpan = document.getElementById('targetEmoji');
+  if (emojiSpan) emojiSpan.textContent = emoji;
+}

@@ -150,3 +150,15 @@ canvas {
         height: auto;
     }
 }
+
+.expression-target {
+  font-size: 25px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.emoj{
+    font-size: 25px;
+}
