@@ -8,8 +8,8 @@ const targetEmotions = ['happy', 'angry', 'surprised', 'neutral'];
 
 async function loadModels() {
   // Memuat model deteksi wajah dan ekspresi wajah
-  await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-  await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+  await faceapi.nets.tinyFaceDetector.loadFromUri('models');
+  await faceapi.nets.faceExpressionNet.loadFromUri('models');
 }
 
 async function startCamera() {
